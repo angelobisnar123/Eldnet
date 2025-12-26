@@ -1,0 +1,136 @@
+﻿@model WebApplication1_Test1.Models.LockerReservationModel
+@{
+    ViewData["Title"] = "Edit Reservation";
+
+    // Get values from ViewBag if they exist (for form repopulation)
+    var lastName = ViewBag.LastName ?? "";
+    var firstName = ViewBag.FirstName ?? "";
+    var contactNumber = ViewBag.ContactNumber ?? "";
+    var semester = ViewBag.Semester ?? "";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h3 class="mb-0">✏️ Edit Reservation</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" asp-controller="LockerReservations" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="RequestDate" />
+                        <input type="hidden" asp-for="UserId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Personal Information -->
+                        <h5 class="mb-3">Personal Information</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Last Name</label>
+                                <input type="text" name="LastName" value="@lastName" class="form-control" required />
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label>First Name</label>
+                                <input type="text" name="FirstName" value="@firstName" class="form-control" required />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <!-- REMOVED IdNumber field -->
+                            <div class="col-md-6">
+                                <label>Contact Number</label>
+                                <input type="text" name="ContactNumber" value="@contactNumber" class="form-control" required
+                                       pattern="^(09|\+639)\d{9}$" title="Please enter a valid Philippine phone number (09XXXXXXXXX or +639XXXXXXXXX)" />
+                                <span class="text-danger"></span>
+                                <small class="form-text text-muted">Format: 09XXXXXXXXX or +639XXXXXXXXX</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="UserEmail"></label>
+                                <input asp-for="UserEmail" type="email" class="form-control" required />
+                                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>Semester</label>
+                                <select name="Semester" class="form-select" required>
+                                    <option value="">-- Select Semester --</option>
+                                    <option value="First Semester" selected="@(semester == "First Semester")">First Semester</option>
+                                    <option value="Second Semester" selected="@(semester == "Second Semester")">Second Semester</option>
+                                    <option value="Summer" selected="@(semester == "Summer")">Summer</option>
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Locker Information -->
+                        <h5 class="mb-3 mt-4">Locker Information</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="LockerNumber"></label>
+                                <select asp-for="LockerNumber" class="form-select" required>
+                                    <option value="">-- Select Locker --</option>
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="Locker @i">Locker @i</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LockerNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Purpose"></label>
+                                <input asp-for="Purpose" class="form-control" placeholder="e.g., Storage of academic materials" />
+                                <span asp-validation-for="Purpose" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Dates -->
+                        <h5 class="mb-3 mt-4">Reservation Period</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="StartDate"></label>
+                                <input asp-for="StartDate" type="date" class="form-control" required />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="EndDate"></label>
+                                <input asp-for="EndDate" type="date" class="form-control" required />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Status"></label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Expired">Expired</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-warning">Update Reservation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

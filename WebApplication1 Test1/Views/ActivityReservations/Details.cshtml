@@ -1,0 +1,104 @@
+﻿@model WebApplication1_Test1.Models.ActivityReservationModel
+
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h3><i class="bi bi-file-text"></i> ACTIVITY RESERVATION DETAILS</h3>
+        </div>
+        <div class="card-body">
+            <!-- Activity Information -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="bi bi-info-circle"></i> ACTIVITY INFORMATION</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Activity Name:</dt>
+                        <dd class="col-sm-8"><strong>@Model.ActivityName</strong></dd>
+
+                        <dt class="col-sm-4">Activity Date:</dt>
+                        <dd class="col-sm-8">@Model.ActivityDate.ToString("MMMM dd, yyyy")</dd>
+
+                        <dt class="col-sm-4">Time:</dt>
+                        <dd class="col-sm-8">@Model.StartTime.ToString(@"hh\:mm") - @Model.EndTime.ToString(@"hh\:mm")</dd>
+
+                        <dt class="col-sm-4">Status:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Status == "Pending")
+                            {
+                                <span class="badge bg-warning">⏳ Pending</span>
+                            }
+                            else if (Model.Status == "Approved")
+                            {
+                                <span class="badge bg-success">✅ Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">❌ Rejected</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="bi bi-file-text"></i> DESCRIPTION & DETAILS</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-12">Full Description:</dt>
+                        <dd class="col-sm-12">
+                            <div class="border p-3 bg-light rounded">
+                                @if (!string.IsNullOrEmpty(Model.Description))
+                                {
+                                    @Html.Raw(Model.Description.Replace(", ", "<br/>"))
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No description provided</span>
+                                }
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="bi bi-calendar-check"></i> ADDITIONAL INFORMATION</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Request Date:</dt>
+                        <dd class="col-sm-8">@Model.RequestDate.ToString("MMMM dd, yyyy hh:mm tt")</dd>
+
+                        <dt class="col-sm-4">Contact Email:</dt>
+                        <dd class="col-sm-8">@Model.UserEmail</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-white me-2">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

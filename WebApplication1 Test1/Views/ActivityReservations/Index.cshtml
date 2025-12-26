@@ -1,0 +1,104 @@
+﻿@model List<WebApplication1_Test1.Models.ActivityReservationModel>
+
+@{
+    ViewData["Title"] = "My Activity Reservations";
+}
+
+<div class="container mt-4">
+    <h2>📅 My Activity Reservations</h2>
+    <p class="text-muted">View and manage your activity reservations</p>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between mb-3">
+        <a href="@Url.Action("Create")" class="btn btn-info text-white">
+            <i class="bi bi-plus-circle"></i> New Activity Reservation
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> You don't have any activity reservations yet.
+            <a href="@Url.Action("Create")" class="alert-link">Create your first reservation</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Activity Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Request Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reservation in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@reservation.ActivityName</strong>
+                                @if (!string.IsNullOrEmpty(reservation.Description))
+                                {
+                                    <br />
+                                    <small class="text-muted">@reservation.Description.Substring(0, Math.Min(reservation.Description.Length, 50))...</small>
+                                }
+                            </td>
+                            <td>@reservation.ActivityDate.ToString("MMM dd, yyyy")</td>
+                            <td>@reservation.StartTime.ToString(@"hh\:mm") - @reservation.EndTime.ToString(@"hh\:mm")</td>
+                            <td>@reservation.UserEmail</td>
+                            <td>
+                                @if (reservation.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">⏳ Pending</span>
+                                }
+                                else if (reservation.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">✅ Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ Rejected</span>
+                                }
+                            </td>
+                            <td>@reservation.RequestDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="@Url.Action("Details", new { id = reservation.Id })" class="btn btn-outline-info" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="@Url.Action("Edit", new { id = reservation.Id })" class="btn btn-outline-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="@Url.Action("Delete", new { id = reservation.Id })" class="btn btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

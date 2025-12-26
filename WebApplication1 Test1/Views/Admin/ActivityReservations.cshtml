@@ -1,0 +1,104 @@
+﻿@model List<ActivityReservationModel>
+
+@{
+    ViewData["Title"] = "Admin - Activity Reservations";
+}
+
+<div class="container mt-4">
+    <h2>🎯 Activity Reservations</h2>
+    <p class="text-muted">Approve, reject, or delete activity reservation requests.</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index", "Admin")">👤 Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("LockerReservations", "Admin")">🔐 Lockers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="@Url.Action("ActivityReservations", "Admin")">🎯 Activities</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("GatePasses", "Admin")">🚪 Gate Passes</a>
+        </li>
+    </ul>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No activity reservations found.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Activity</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var reservation in Model)
+                    {
+                        <tr>
+                            <td>@reservation.UserEmail</td>
+                            <td><strong>@reservation.ActivityName</strong></td>
+                            <td>@reservation.ActivityDate.ToString("MMM dd, yyyy")</td>
+                            <td>@reservation.StartTime.ToString(@"hh\:mm") - @reservation.EndTime.ToString(@"hh\:mm")</td>
+                            <td>@reservation.Description</td>
+                            <td>
+                                @if (reservation.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">⏳ Pending</span>
+                                }
+                                else if (reservation.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">✅ Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ Rejected</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    @if (reservation.Status == "Pending")
+                                    {
+                                        <form asp-action="ApproveActivity" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@reservation.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
+                                        </form>
+                                        <form asp-action="RejectActivity" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@reservation.Id" />
+                                            <button type="submit" class="btn btn-sm btn-warning">❌ Reject</button>
+                                        </form>
+                                    }
+                                    <form asp-action="DeleteActivity" method="post" class="d-inline" onsubmit="return confirm('Delete this reservation?');">
+                                        <input type="hidden" name="id" value="@reservation.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

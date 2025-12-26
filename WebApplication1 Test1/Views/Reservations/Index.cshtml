@@ -1,0 +1,213 @@
+﻿@model WebApplication1_Test1.Models.UserReservationsViewModel
+
+@{
+    ViewData["Title"] = "My Requests";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>My Requests</h2>
+        <div>
+            <a class="btn btn-outline-primary me-2" asp-action="CreateLocker">Request Locker</a>
+            <a class="btn btn-outline-primary me-2" asp-action="CreateActivity">Book Activity</a>
+            <a class="btn btn-outline-primary" asp-action="CreateGatePass">Request Gate Pass</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <h4 class="mt-4">Locker Reservations</h4>
+    @if (!Model.Lockers.Any())
+    {
+        <div class="alert alert-info">No locker reservations found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Locker #</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th>Requested</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Lockers)
+                    {
+                        <tr>
+                            <td>@r.LockerNumber</td>
+                            <td>@r.StartDate.ToString("MMM dd, yyyy")</td>
+                            <td>@r.EndDate.ToString("MMM dd, yyyy")</td>
+                            <td>@r.Purpose</td>
+                            <td>
+                                @if (r.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">⏳ Pending</span>
+                                }
+                                else if (r.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">✅ Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ Rejected</span>
+                                }
+                            </td>
+                            <td>@r.RequestDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (r.Status == "Pending")
+                                {
+                                    <form asp-action="CancelLocker" method="post" class="d-inline" onsubmit="return confirm('Cancel this request?');">
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <h4 class="mt-4">Activity Reservations</h4>
+    @if (!Model.Activities.Any())
+    {
+        <div class="alert alert-info">No activity reservations found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Activity</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Requested</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model.Activities)
+                    {
+                        <tr>
+                            <td>@a.ActivityName</td>
+                            <td>@a.ActivityDate.ToString("MMM dd, yyyy")</td>
+                            <td>@a.StartTime.ToString(@"hh\:mm") - @a.EndTime.ToString(@"hh\:mm")</td>
+                            <td>@a.Description</td>
+                            <td>
+                                @if (a.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">⏳ Pending</span>
+                                }
+                                else if (a.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">✅ Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ Rejected</span>
+                                }
+                            </td>
+                            <td>@a.RequestDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (a.Status == "Pending")
+                                {
+                                    <form asp-action="CancelActivity" method="post" class="d-inline" onsubmit="return confirm('Cancel this request?');">
+                                        <input type="hidden" name="id" value="@a.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <h4 class="mt-4">Gate Passes</h4>
+    @if (!Model.GatePasses.Any())
+    {
+        <div class="alert alert-info">No gate pass requests found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Destination</th>
+                        <th>Exit</th>
+                        <th>Return</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Requested</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in Model.GatePasses)
+                    {
+                        <tr>
+                            <td>@g.Destination</td>
+                            <td>
+                                @g.ExitDate.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@g.ExitTime.ToString(@"hh\:mm")</small>
+                            </td>
+                            <td>
+                                @if (g.ReturnDate.HasValue)
+                                {
+                                    @g.ReturnDate.Value.ToString("MMM dd, yyyy")
+                        
+                                    <br />
+                                    <small class="text-muted">@g.ReturnTime?.ToString(@"hh\:mm")</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>@g.Reason</td>
+                            <td>
+                                @if (g.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">⏳ Pending</span>
+                                }
+                                else if (g.Status == "Approved")
+                                {
+                                    <span class="badge bg-success">✅ Approved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ Rejected</span>
+                                }
+                            </td>
+                            <td>@g.RequestDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (g.Status == "Pending")
+                                {
+                                    <form asp-action="CancelGatePass" method="post" class="d-inline" onsubmit="return confirm('Cancel this request?');">
+                                        <input type="hidden" name="id" value="@g.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

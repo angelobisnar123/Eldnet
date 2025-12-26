@@ -1,0 +1,125 @@
+﻿@model WebApplication1_Test1.Models.ActivityReservationModel
+
+@{
+    ViewData["Title"] = "Edit Activity Reservation";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-warning text-white">
+            <h3><i class="bi bi-pencil-square"></i> EDIT ACTIVITY RESERVATION</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="RequestDate" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Activity Information -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5><i class="bi bi-info-circle"></i> ACTIVITY INFORMATION</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="ActivityName" class="form-label"></label>
+                            <input asp-for="ActivityName" class="form-control" placeholder="Enter Activity Name" required />
+                            <span asp-validation-for="ActivityName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ActivityDate" class="form-label"></label>
+                                <input asp-for="ActivityDate" class="form-control" type="date" required />
+                                <span asp-validation-for="ActivityDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StartTime" class="form-label"></label>
+                                <input asp-for="StartTime" class="form-control" type="time" required />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="EndTime" class="form-label"></label>
+                                <input asp-for="EndTime" class="form-control" type="time" required />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description & Status -->
+                <div class="card mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5><i class="bi bi-file-text"></i> DESCRIPTION & STATUS</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="6" placeholder="Enter activity details" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserEmail" class="form-label"></label>
+                                <input asp-for="UserEmail" type="email" class="form-control" placeholder="Enter your email address" required />
+                                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Status" class="form-label"></label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-warning text-white">
+                        <i class="bi bi-save"></i> Update Reservation
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validate end time is after start time
+            const startTimeInput = document.getElementById('StartTime');
+            const endTimeInput = document.getElementById('EndTime');
+
+            if (startTimeInput && endTimeInput) {
+                startTimeInput.addEventListener('change', validateTimes);
+                endTimeInput.addEventListener('change', validateTimes);
+
+                function validateTimes() {
+                    if (startTimeInput.value && endTimeInput.value) {
+                        if (startTimeInput.value >= endTimeInput.value) {
+                            endTimeInput.setCustomValidity('End time must be after start time');
+                        } else {
+                            endTimeInput.setCustomValidity('');
+                        }
+                    }
+                }
+                validateTimes();
+            }
+        });
+    </script>
+}

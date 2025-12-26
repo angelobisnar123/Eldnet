@@ -1,0 +1,49 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Login</h2>
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <form asp-action="Login" method="post">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email address</label>
+                            <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input asp-for="RememberMe" class="form-check-input" />
+                            <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+
+                    <hr class="my-3">
+
+                    <div class="text-center">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-link">Don't have an account? Register</a><br>
+                        <a asp-controller="Account" asp-action="ForgotPassword" class="btn btn-link">Forgot password?</a><br>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-link">← Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<WebApplication1_Test1.Models.GatePassViewModel>
+@{
+    ViewData["Title"] = "Gatepass Applications";
+}
+
+<h2>Gatepass Applications</h2>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">New Application</a>
+    <a asp-controller="Home" asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+
+    @if (Model != null && Model.Any())
+    {
+        <a asp-action="ClearAll"
+           class="btn btn-warning"
+           onclick="return confirm('Are you sure you want to delete ALL applications?');">
+            Clear All Data
+        </a>
+    }
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="alert alert-success">
+        Found @Model.Count() application(s)
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Plate No.</th>
+                    <th>Vehicle</th>
+                    <th>College/Dept</th>
+                    <th>Course</th>
+                    <th>Date Submitted</th>
+                    <th>Expiry Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.FirstName) || !string.IsNullOrEmpty(item.LastName))
+                            {
+                                <strong>@item.FullName</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">(No Name)</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.PlateNumber))
+                            {
+                                <span class="badge bg-primary">@item.PlateNumber</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">(No Plate)</span>
+                            }
+                        </td>
+                        <td>@(item.VehicleType ?? "(No Vehicle)")</td>
+                        <td>@(item.CollegeDepartment ?? "-")</td>
+                        <td>@(item.Course ?? "-")</td>
+                        <td>@item.DateToday.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <td>@item.RegistrationExpiryDate.ToString("MM/dd/yyyy")</td>
+                        <td>
+                            <a asp-action="Delete"
+                               asp-route-plateNumber="@item.PlateNumber"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this application?');">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> <strong>No applications found.</strong> Click "New Application" to create one.
+    </div>
+}

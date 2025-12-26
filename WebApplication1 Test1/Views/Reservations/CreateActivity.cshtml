@@ -1,0 +1,62 @@
+﻿@model WebApplication1_Test1.Models.CreateActivityViewModel
+
+@{
+    ViewData["Title"] = "Book Activity";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-4">Book Activity</h3>
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <form asp-action="CreateActivity" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="ActivityName" class="form-label"></label>
+                            <input asp-for="ActivityName" class="form-control" />
+                            <span asp-validation-for="ActivityName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ActivityDate" class="form-label"></label>
+                                <input asp-for="ActivityDate" type="date" class="form-control" />
+                                <span asp-validation-for="ActivityDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StartTime" class="form-label"></label>
+                                <input asp-for="StartTime" type="time" class="form-control" />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="EndTime" class="form-label"></label>
+                                <input asp-for="EndTime" type="time" class="form-control" />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Welcome, @User.Identity.Name!</h2>
+            <p class="text-muted">Manage your expenses and requests</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <a href="@Url.Action("Index", "LockerReservations")" class="text-decoration-none">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">🔐 Lockers</h5>
+                        <h2>0</h2>
+                        <p class="card-text">Active reservations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Index", "ActivityReservations")" class="text-decoration-none">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">🎯 Activities</h5>
+                        <h2>0</h2>
+                        <p class="card-text">Upcoming events</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Index", "GatePasses")" class="text-decoration-none">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">🚪 Gate Passes</h5>
+                        <h2>0</h2>
+                        <p class="card-text">Active passes</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="@Url.Action("Create", "LockerReservations")" class="btn btn-outline-success btn-lg">
+                                    🔐 Request Locker
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="@Url.Action("Create", "ActivityReservations")" class="btn btn-outline-warning btn-lg">
+                                    🎯 Activity Center
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-grid">
+                                <a href="@Url.Action("Create", "GatePasses")" class="btn btn-outline-info btn-lg">
+                                    🚪 Request Gate Pass
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Pending Requests</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-warning">⏳</span>
+                                <a href="@Url.Action("Index", "LockerReservations")" class="text-decoration-none">
+                                    Locker Reservations
+                                </a>
+                            </div>
+                            <strong>0</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-warning">⏳</span>
+                                <a href="@Url.Action("Index", "ActivityReservations")" class="text-decoration-none">
+                                    Activity Reservations
+                                </a>
+                            </div>
+                            <strong>0</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-warning">⏳</span>
+                                <a href="@Url.Action("Index", "GatePasses")" class="text-decoration-none">
+                                    Gate Passes
+                                </a>
+                            </div>
+                            <strong>0</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+        margin-bottom: 20px;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+    .list-group-item a {
+        color: #212529;
+    }
+
+        .list-group-item a:hover {
+            color: #0d6efd;
+        }
+</style>

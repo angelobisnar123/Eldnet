@@ -1,0 +1,117 @@
+﻿@model WebApplication1_Test1.Models.GatePassViewModel
+@{
+    ViewData["Title"] = "Gatepass Application Form";
+}
+
+<h2>Gatepass Application Form</h2>
+
+<form asp-action="Create" asp-controller="GatePasses" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Show validation errors after submit -->
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <strong>Please correct the following errors:</strong>
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <!-- Personal Information -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+            <input type="text" name="FirstName" id="FirstName" class="form-control" value="@Model?.FirstName" placeholder="Enter first name" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+            <input type="text" name="LastName" id="LastName" class="form-control" value="@Model?.LastName" placeholder="Enter last name" />
+        </div>
+    </div>
+
+    <!-- Academic Information -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="CollegeDepartment" class="form-label">College/Department</label>
+            <input type="text" name="CollegeDepartment" id="CollegeDepartment" class="form-control" value="@Model?.CollegeDepartment" placeholder="e.g., College of Engineering" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="Course" class="form-label">Course</label>
+            <input type="text" name="Course" id="Course" class="form-control" value="@Model?.Course" placeholder="e.g., Computer Science" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="YearLevel" class="form-label">Year Level</label>
+            <input type="text" name="YearLevel" id="YearLevel" class="form-control" value="@Model?.YearLevel" placeholder="e.g., 3rd Year" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="SchoolYear" class="form-label">School Year</label>
+            <input type="text" name="SchoolYear" id="SchoolYear" class="form-control" value="@Model?.SchoolYear" placeholder="e.g., 2025-2026" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="ClassType" class="form-label">Class Type</label>
+            <input type="text" name="ClassType" id="ClassType" class="form-control" value="@Model?.ClassType" placeholder="e.g., Regular, Irregular" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="Address" class="form-label">Address</label>
+        <textarea name="Address" id="Address" class="form-control" rows="3" placeholder="Enter your complete address">@Model?.Address</textarea>
+    </div>
+
+    <hr />
+
+    <!-- Vehicle Information -->
+    <h5>Vehicle Information</h5>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="PlateNumber" class="form-label">Plate Number <span class="text-danger">*</span></label>
+            <input type="text" name="PlateNumber" id="PlateNumber" class="form-control" value="@Model?.PlateNumber" placeholder="e.g., ABC123" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="VehicleType" class="form-label">Vehicle Type <span class="text-danger">*</span></label>
+            <input type="text" name="VehicleType" id="VehicleType" class="form-control" value="@Model?.VehicleType" placeholder="e.g., Motorcycle, Car" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="Color" class="form-label">Color</label>
+            <input type="text" name="Color" id="Color" class="form-control" value="@Model?.Color" placeholder="e.g., Red, Blue" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="Manufacturer" class="form-label">Manufacturer</label>
+            <input type="text" name="Manufacturer" id="Manufacturer" class="form-control" value="@Model?.Manufacturer" placeholder="e.g., Honda, Toyota" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="Model" class="form-label">Model</label>
+            <input type="text" name="Model" id="Model" class="form-control" value="@Model?.Model" placeholder="e.g., Civic, Wave" />
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="@Url.Action("Dashboard", "Home")" class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+        <div>
+            <a href="@Url.Action("Index", "GatePasses")" class="btn btn-secondary me-2">
+                Back to List
+            </a>
+            <button type="submit" class="btn btn-warning">
+                Submit Application
+            </button>
+        </div>
+    </div>
+</form>

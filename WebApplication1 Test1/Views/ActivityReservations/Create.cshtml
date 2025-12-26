@@ -1,0 +1,254 @@
+﻿@model WebApplication1_Test1.Models.ActivityReservationModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Activity Area Reservation Form";
+
+    // Get current user in the view
+    var currentUser = await UserManager.GetUserAsync(User);
+    var userId = currentUser?.Id;
+    var userEmail = currentUser?.Email;
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h3><i class="bi bi-clipboard"></i> ACTIVITY AREA RESERVATION FORM</h3>
+        </div>
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <form asp-action="Create" method="post" id="reservationForm">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" asp-for="UserId" id="UserId" value="@userId" />
+                <input type="hidden" asp-for="Status" value="Pending" />
+                <input type="hidden" asp-for="RequestDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+
+                <!-- Activity Details -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="bi bi-info-circle"></i> ACTIVITY INFORMATION</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="ActivityName" class="form-label"></label>
+                            <input asp-for="ActivityName" class="form-control" placeholder="Enter Activity Name" required />
+                            <span asp-validation-for="ActivityName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ActivityDate" class="form-label"></label>
+                                <input asp-for="ActivityDate" class="form-control" type="date" required />
+                                <span asp-validation-for="ActivityDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserEmail" class="form-label"></label>
+                                <input asp-for="UserEmail" type="email" class="form-control" placeholder="Enter your email address"
+                                       value="@userEmail" required />
+                                <span asp-validation-for="UserEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="bi bi-calendar"></i> SCHEDULE</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartTime" class="form-label"></label>
+                                <input asp-for="StartTime" class="form-control" type="time" required />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EndTime" class="form-label"></label>
+                                <input asp-for="EndTime" class="form-control" type="time" required />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="bi bi-file-text"></i> ACTIVITY DESCRIPTION</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="8" placeholder="Please include all details about your activity:
+
+• Organization Name
+• Venue/Location
+• Speaker Name (if any)
+• Number of Participants
+• Purpose/Objectives
+• Equipment/Facilities Needed
+• Nature of Activity (Seminar, Workshop, etc.)
+• Source of Funds
+• Any other important details" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <small class="text-muted">Please provide comprehensive details about your activity in the box above.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-info text-white" id="submitBtn">
+                        <i class="bi bi-check-circle"></i> Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded - initializing form');
+            console.log('User ID from server:', document.getElementById('UserId')?.value);
+            console.log('User Email from server:', document.getElementById('UserEmail')?.value);
+
+            // Set default date to today if empty
+            const today = new Date().toISOString().split('T')[0];
+            const activityDateInput = document.getElementById('ActivityDate');
+
+            if (activityDateInput && !activityDateInput.value) {
+                console.log('Setting default activity date:', today);
+                activityDateInput.value = today;
+                activityDateInput.min = today;
+            }
+
+            // Set default times
+            const startTimeInput = document.getElementById('StartTime');
+            const endTimeInput = document.getElementById('EndTime');
+
+            if (startTimeInput && !startTimeInput.value) {
+                console.log('Setting default start time: 09:00');
+                startTimeInput.value = '09:00';
+            }
+
+            if (endTimeInput && !endTimeInput.value) {
+                console.log('Setting default end time: 17:00');
+                endTimeInput.value = '17:00';
+            }
+
+            // Validate end time is after start time
+            if (startTimeInput && endTimeInput) {
+                startTimeInput.addEventListener('change', validateTimes);
+                endTimeInput.addEventListener('change', validateTimes);
+
+                function validateTimes() {
+                    console.log('Validating times:', startTimeInput.value, endTimeInput.value);
+                    if (startTimeInput.value && endTimeInput.value) {
+                        if (startTimeInput.value >= endTimeInput.value) {
+                            console.log('Time validation failed: End time must be after start time');
+                            endTimeInput.setCustomValidity('End time must be after start time');
+                            return false;
+                        } else {
+                            endTimeInput.setCustomValidity('');
+                            return true;
+                        }
+                    }
+                    return true;
+                }
+                validateTimes();
+            }
+
+            // Form submission handler
+            const form = document.getElementById('reservationForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    console.log('Form submitted, validating...');
+                    console.log('User ID on submit:', document.getElementById('UserId')?.value);
+
+                    // Prevent double submission
+                    if (submitBtn.disabled) {
+                        console.log('Form already submitting, preventing duplicate');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Validate times
+                    if (startTimeInput && endTimeInput) {
+                        if (!validateTimes()) {
+                            console.log('Time validation failed, preventing submission');
+                            event.preventDefault();
+                            return false;
+                        }
+                    }
+
+                    // Check for empty required fields
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let allValid = true;
+
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            console.log('Required field empty:', field.name || field.id);
+                            allValid = false;
+                        }
+                    });
+
+                    if (!allValid) {
+                        console.log('Not all required fields are filled');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Check if UserId is set
+                    const userId = document.getElementById('UserId')?.value;
+                    if (!userId) {
+                        console.error('User ID is not set!');
+                        alert('Error: User ID is not set. Please log in again.');
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    // Disable submit button to prevent double submission
+                    console.log('Form validation passed, disabling submit button');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bi bi-clock"></i> Submitting...';
+
+                    // Allow form to submit normally
+                    console.log('Allowing form to submit');
+                    return true;
+                });
+            } else {
+                console.error('Form element not found');
+            }
+
+            // Debug: Log form field values
+            console.log('Form initialization complete');
+            console.log('Activity Date:', document.getElementById('ActivityDate')?.value);
+            console.log('Start Time:', document.getElementById('StartTime')?.value);
+            console.log('End Time:', document.getElementById('EndTime')?.value);
+            console.log('Email:', document.getElementById('UserEmail')?.value);
+            console.log('User ID:', document.getElementById('UserId')?.value);
+        });
+    </script>
+}
